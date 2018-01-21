@@ -12,8 +12,8 @@
 * [Réseaux](#networks)
 * [Enregistrement et Dépôt](#registry--repository)
 * [Dockerfile](#dockerfile)
-* [Layers](#layers)
-* [Links](#links)
+* [Couches](#layers)
+* [Liens](#links)
 * [Volumes](#volumes)
 * [Exposition des Ports](#exposing-ports)
 * [Meilleures pratiques](#best-practices)
@@ -106,102 +106,99 @@ Une autre option utile est `docker run --name yourname docker_image` car lorsque
 
 ### Démarrer et Arrêter
 
-* [`docker start`](https://docs.docker.com/engine/reference/commandline/start) starts a container so it is running.
-* [`docker stop`](https://docs.docker.com/engine/reference/commandline/stop) stops a running container.
-* [`docker restart`](https://docs.docker.com/engine/reference/commandline/restart) stops and starts a container.
-* [`docker pause`](https://docs.docker.com/engine/reference/commandline/pause/) pauses a running container, "freezing" it in place.
-* [`docker unpause`](https://docs.docker.com/engine/reference/commandline/unpause/) will unpause a running container.
-* [`docker wait`](https://docs.docker.com/engine/reference/commandline/wait) blocks until running container stops.
-* [`docker kill`](https://docs.docker.com/engine/reference/commandline/kill) sends a SIGKILL to a running container.
-* [`docker attach`](https://docs.docker.com/engine/reference/commandline/attach) will connect to a running container.
+* [`docker start`](https://docs.docker.com/engine/reference/commandline/start) démarre un conteneur afin qu'il change d'état en fonctionnement.
+* [`docker stop`](https://docs.docker.com/engine/reference/commandline/stop) arrête un conteneur en fonctionnement.
+* [`docker restart`](https://docs.docker.com/engine/reference/commandline/restart) arrête et démarre un conteneur.
+* [`docker pause`](https://docs.docker.com/engine/reference/commandline/pause/) met en pause un conteneur en fonctionnement, le "gelant" sur place.
+* [`docker unpause`](https://docs.docker.com/engine/reference/commandline/unpause/) désactive le pause sur un conteneur en fonctionnement.
+* [`docker wait`](https://docs.docker.com/engine/reference/commandline/wait) bloque le conteneur jusqu'à ce qu'il s'arrête et affiche un ou plusieurs codes de sortie.
+* [`docker kill`](https://docs.docker.com/engine/reference/commandline/kill) envoie un SIGKILL à un conteneur en fonctionnement.
+* [`docker attach`](https://docs.docker.com/engine/reference/commandline/attach) se connecter à un conteneur en fonctionnement.
 
-If you want to integrate a container with a [host process manager](https://docs.docker.com/engine/admin/host_integration/), start the daemon with `-r=false` then use `docker start -a`.
+Si vous souhaitez exposer les ports de conteneur via l'hôte, reportez-vous à la section [Exposition des Ports](#exposing-ports).
 
-If you want to expose container ports through the host, see the [exposing ports](#exposing-ports) section.
+Les stratégies de redémarrage sur les instances de docker en panne sont [couvert ici](http://container42.com/2014/09/30/docker-restart-policies/), pour toujours automatiquement redémarrer le conteneur il faut lancer la commande avec le drapeau suivant `docker run --restart always`.
 
-Restart policies on crashed docker instances are [covered here](http://container42.com/2014/09/30/docker-restart-policies/).
+#### Les Contraintes CPU
 
-#### CPU Constraints
+Vous pouvez limiter l'utilisation du processeur, soit en utilisant un pourcentage de tous les processeurs, soit en utilisant des cœurs spécifiques.  
 
-You can limit CPU, either using a percentage of all CPUs, or by using specific cores.  
-
-For example, you can tell the [`cpu-shares`](https://docs.docker.com/engine/reference/run/#/cpu-share-constraint) setting.  The setting is a bit strange -- 1024 means 100% of the CPU, so if you want the container to take 50% of all CPU cores, you should specify 512.  See https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/#_cpu for more:
+Par exemple, vous pouvez dire au [`cpu-shares`](https://docs.docker.com/engine/reference/run/#/cpu-share-constraint) réglage. Le réglage est un peu étrange -- 1024 veut dire 100% du CPU, donc si vous voulez que le conteneur prenne 50% de tous les cœurs de CPU, vous devez spécifier 512.  Voir https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/#_cpu pour mieux comprendre:
 
 ```
 docker run -ti --c 512 agileek/cpuset-test
 ```
 
-You can also only use some CPU cores using [`cpuset-cpus`](https://docs.docker.com/engine/reference/run/#/cpuset-constraint).  See https://agileek.github.io/docker/2014/08/06/docker-cpuset/ for details and some nice videos:
+Vous pouvez également utiliser uniquement quelques cœurs de processeur en utilisant [`cpuset-cpus`](https://docs.docker.com/engine/reference/run/#/cpuset-constraint).  Voir https://agileek.github.io/docker/2014/08/06/docker-cpuset/ pour plus de détails et quelques vidéos:
 
 ```
 docker run -ti --cpuset-cpus=0,4,6 agileek/cpuset-test
 ```
 
-Note that Docker can still **see** all of the CPUs inside the container -- it just isn't using all of them.  See https://github.com/docker/docker/issues/20770 for more details.
+Notez que Docker peut encore **voi** tous les processeurs à l'intérieur du conteneur -- seulement il ne les utilise pas tous. Voir https://github.com/docker/docker/issues/20770 pour plus de détails.
 
-#### Memory Constraints
+#### Les Contraintes Mémoire
 
-You can also set [memory constraints](https://docs.docker.com/engine/reference/run/#/user-memory-constraints) on Docker:
+Vous pouvez également définir [contraintes de mémoire](https://docs.docker.com/engine/reference/run/#/user-memory-constraints) sur Docker:
 
 ```
 docker run -it -m 300M ubuntu:14.04 /bin/bash
 ```
 
-#### Capabilities
+#### Capacités
 
-Linux capabilities can be set by using `cap-add` and `cap-drop`.  See https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities for details.  This should be used for greater security.
+Les capacités Linux peuvent être définies en utilisant `cap-add` and `cap-drop`.  Voir https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities pour plus de détails. Cela devrait être utilisé pour plus de sécurité.
 
-To mount a FUSE based filesystem, you need to combine both --cap-add and --device:
+Pour monter un système de fichiers basé sur FUSE, vous devez combiner --cap-add et --device:
 
 ```
 docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse sshfs
 ```
 
-Give access to a single device:
+Donner accès à un seul appareil:
 
 ```
 docker run -it --device=/dev/ttyUSB0 debian bash
 ```
 
-Give access to all devices:
+Donner accès à tous les appareils:
 
 ```
 docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb debian bash
 ```
 
-more info about privileged containers [here](
-https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities)
+plus d'informations sur les priviléges des conteneurs [ici](https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities)
 
 
 ### Info
 
-* [`docker ps`](https://docs.docker.com/engine/reference/commandline/ps) shows running containers.
-* [`docker logs`](https://docs.docker.com/engine/reference/commandline/logs) gets logs from container.  (You can use a custom log driver, but logs is only available for `json-file` and `journald` in 1.10).
-* [`docker inspect`](https://docs.docker.com/engine/reference/commandline/inspect) looks at all the info on a container (including IP address).
-* [`docker events`](https://docs.docker.com/engine/reference/commandline/events) gets events from container.
-* [`docker port`](https://docs.docker.com/engine/reference/commandline/port) shows public facing port of container.
-* [`docker top`](https://docs.docker.com/engine/reference/commandline/top) shows running processes in container.
-* [`docker stats`](https://docs.docker.com/engine/reference/commandline/stats) shows containers' resource usage statistics.
-* [`docker diff`](https://docs.docker.com/engine/reference/commandline/diff) shows changed files in the container's FS.
+* [`docker ps`](https://docs.docker.com/engine/reference/commandline/ps) montre des conteneurs en fonctionnement.
+* [`docker logs`](https://docs.docker.com/engine/reference/commandline/logs) obtient les journaux du conteneur. (Vous pouvez utiliser un pilote de journal personnalisé, mais les journaux sont uniquement disponibles pour `json-file` et` journald` dans la version 1.10).
+* [`docker inspect`](https://docs.docker.com/engine/reference/commandline/inspect) regarde toutes les informations sur un conteneur (y compris l'adresse IP).
+* [`docker events`](https://docs.docker.com/engine/reference/commandline/events) obtient des événements du conteneur.
+* [`docker port`](https://docs.docker.com/engine/reference/commandline/port) montre les ports public du conteneur.
+* [`docker top`](https://docs.docker.com/engine/reference/commandline/top) montre les processus en cours d'exécution dans le conteneur.
+* [`docker stats`](https://docs.docker.com/engine/reference/commandline/stats) montre les statistiques d'utilisation des ressources du conteneur.
+* [`docker diff`](https://docs.docker.com/engine/reference/commandline/diff) montre les fichiers modifiés dans le FS (file systeme) du conteneur.
 
-`docker ps -a` shows running and stopped containers.
+`docker ps -a` montre des conteneurs en fonctionnement et ceux arrêtés.
 
-`docker stats --all` shows a running list of containers.
+`docker stats --all` montre une liste de statistique des conteneurs.
 
 ### Import / Export
 
-* [`docker cp`](https://docs.docker.com/engine/reference/commandline/cp) copies files or folders between a container and the local filesystem.
-* [`docker export`](https://docs.docker.com/engine/reference/commandline/export) turns container filesystem into tarball archive stream to STDOUT.
+* [`docker cp`](https://docs.docker.com/engine/reference/commandline/cp) copie des fichiers ou des dossiers entre un conteneur et le système de fichiers local.
+* [`docker export`](https://docs.docker.com/engine/reference/commandline/export) transforme le système de fichiers du conteneur en un flux d'archive tarball dans STDOUT.
 
-### Executing Commands
+### Exécuter des commandes
 
-* [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec) to execute a command in container.
+* [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec) exécuter une commande dans le conteneur.
 
-To enter a running container, attach a new shell process to a running container called foo, use: `docker exec -it foo /bin/bash`.
+Pour entrer un conteneur en fonctionnement, joignez un nouveau processus shell à un conteneur en fonctionnement appelé foo, utilisez `docker exec -it foo /bin/bash`.
 
 ## Images
 
-Images are just [templates for docker containers](https://docs.docker.com/engine/understanding-docker/#how-does-a-docker-image-work).
+Les images sont juste des [modèles pour les conteneurs docker](https://docs.docker.com/engine/understanding-docker/#how-does-a-docker-image-work).
 
 ### Lifecycle
 
