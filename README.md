@@ -1,5 +1,6 @@
 # Antisèche Docker
 
+**Ce travail et la traduction en français de [Docker CheatSheet](https://github.com/wsargent/docker-cheat-sheet)**
 
 ## Table des matières
 
@@ -18,15 +19,14 @@
 * [Meilleures pratiques](#best-practices)
 * [Sécurité](#security)
 * [Astuces](#tips)
-* [Contributing](#contributing)
 
-## Why Docker
+## Pourquoi Docker
 
 "Avec Docker, les développeurs peuvent créer n'importe quelle application dans n'importe quelle langue en utilisant n'importe quel chaîne d'outils. Les applications «Dockeriser» sont complètement portables et peuvent être exécutées n'importe où: ordinateurs portables OS X et Windows de collègues, serveurs exécutant Ubuntu dans le cloud, machines virtuelles d'un datacenter de production exécutant Red Hat..
 
 Les développeurs peuvent démarrer rapidement en commençant par l'une des 13 000+ applications disponibles sur Docker Hub. Docker gère et suit les modifications et les dépendances, ce qui permet aux administrateurs système de comprendre plus facilement le fonctionnement des applications créées par les développeurs. Et avec Docker Hub, les développeurs peuvent automatiser leur pipeline de génération et partager des artefacts (fichiers crèes) avec des collaborateurs via des dépôts publics ou privés.
 
-Docker aide les développeurs à créer et déployer des applications de meilleure qualité, plus rapidement." -- [What is Docker](https://www.docker.com/what-docker#copy1)
+Docker aide les développeurs à créer et déployer des applications de meilleure qualité, plus rapidement." -- [Docker c'est quoi](https://www.docker.com/what-docker#copy1)
 
 ## Prérequis
 
@@ -104,7 +104,7 @@ Il y a aussi un [pilote de journalisation](https://docs.docker.com/engine/admin/
 
 Une autre option utile est `docker run --name yourname docker_image` car lorsque vous spécifiez le `--name` dans la commande `run`, cela vous permet de démarrer et d'arrêter un conteneur en l'appelant avec le nom que vous avez spécifié lorsque vous l'avez créé.
 
-### Starting and Stopping
+### Démarrer et Arrêter
 
 * [`docker start`](https://docs.docker.com/engine/reference/commandline/start) starts a container so it is running.
 * [`docker stop`](https://docs.docker.com/engine/reference/commandline/stop) stops a running container.
@@ -786,23 +786,3 @@ vim httpd.conf
 # start container with modified configuration
 docker run --rm -ti -v "$PWD/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro" -p "80:80" httpd
 ```
-
-## Contributing
-
-Here's how to contribute to this cheat sheet.
-
-### Open README.md
-
-Click [README.md](https://github.com/wsargent/docker-cheat-sheet/blob/master/README.md) <-- this link
-
-![Click This](images/click.png)
-
-### Edit Page
-
-![Edit This](images/edit.png)
-
-### Make Changes and Commit
-
-![Change This](images/change.png)
-
-![Commit](images/commit.png)
