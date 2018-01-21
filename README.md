@@ -58,11 +58,11 @@ Si vous êtes un débutant en Docker, vous devriez suivre la [série de tutoriel
 
 Télécharger et installer [Docker Toolbox](https://docs.docker.com/toolbox/overview/).  [Docker For Mac](https://docs.docker.com/docker-for-mac/) est bien, mais ce n'est pas tout à fait aussi fini que l'installation avec VirtualBox.  [Voir la comparaison](https://docs.docker.com/docker-for-mac/docker-toolbox/).
 
-> **NOTE** If you have an existing docker toolbox, you might think you can upgrade [Docker Machine](https://docs.docker.com/machine/install-machine/) binaries directly (either from URL or `docker-machine upgrade default`) and it will take care of itself.  This is not going to help -- `docker-machine` will be `1.10.3` while `docker` is still `1.8.3` or whatever your previous version is.
+> **NOTE** Si vous avez déjà un docker toolbox existante, vous pourriez penser que vous pouvez mettre à niveau les binaires [Docker Machine](https://docs.docker.com/machine/install-machine/) directement (à partir de l'URL ou `docker-machine upgrade default`) et il prendra soin de lui-même. Cela ne va pas aider -- `docker-machine` sera en `1.10.3` tandis que `docker` est encore `1.8.3` ou quelle que soit votre version précédente.
 >
-> You are much better off using Docker Toolbox DMG file to upgrade, which will take care of all the binaries at once.
+> Il vaut mieux utiliser le fichier Docker Toolbox DMG pour effectuer la mise à niveau, qui s'occupera de tous les fichiers binaires à la fois.
 
-Once you've installed Docker Toolbox, install a VM with Docker Machine using the VirtualBox provider:
+Une fois que vous avez installé Docker Toolbox, installez une VM avec Docker Machine en utilisant le fournisseur VirtualBox:
 
 ```
 docker-machine create --driver=virtualbox default
@@ -70,15 +70,15 @@ docker-machine ls
 eval "$(docker-machine env default)"
 ```
 
-Then start up a container:
+Ensuite, démarrez un conteneur:
 
 ```
 docker run hello-world
 ```
 
-That's it, you have a running Docker container.
+Voilà, vous avez un conteneur Docker en cours d'exécution.
 
-If you are a complete Docker newbie, you should probably follow the [series of tutorials](https://docs.docker.com/engine/getstarted/) now.
+Si vous êtes un débutant Docker, vous devriez probablement suivre cette [série de tutoriels](https://docs.docker.com/engine/getstarted/).
 
 ## Conteneurs
 
@@ -86,23 +86,23 @@ If you are a complete Docker newbie, you should probably follow the [series of t
 
 ### Lifecycle
 
-* [`docker create`](https://docs.docker.com/engine/reference/commandline/create) creates a container but does not start it.
-* [`docker rename`](https://docs.docker.com/engine/reference/commandline/rename/) allows the container to be renamed.
-* [`docker run`](https://docs.docker.com/engine/reference/commandline/run) creates and starts a container in one operation.
-* [`docker rm`](https://docs.docker.com/engine/reference/commandline/rm) deletes a container.
-* [`docker update`](https://docs.docker.com/engine/reference/commandline/update/) updates a container's resource limits.
+* [`docker create`](https://docs.docker.com/engine/reference/commandline/create) crée un conteneur sans le démarrer.
+* [`docker rename`](https://docs.docker.com/engine/reference/commandline/rename/) renommé un conteneur.
+* [`docker run`](https://docs.docker.com/engine/reference/commandline/run) crée et démarre un conteneur en une opération.
+* [`docker rm`](https://docs.docker.com/engine/reference/commandline/rm) supprime un conteneur.
+* [`docker update`](https://docs.docker.com/engine/reference/commandline/update/) met à jour des limitations de ressources d'un conteneur.
 
-Normally if you run a container without options it will start and stop immediately, if you want keep it running you can use the command, `docker run -td container_id` this will use the option `-t` that will allocate a pseudo-TTY session and `-d` that will detach automatically the container (run container in background and print container ID).
+Normalement, si vous exécutez un conteneur (commande `run`) sans options, il démarrera et s'arrêtera immédiatement, si vous voulez le garder en marche, vous pouvez utiliser la commande, `docker run -td container_id` ceci utilisera l'option `-t` qui allouera une session de pseudo-TTY et `-d` qui détachera automatiquement le conteneur (l'exécuter en arrière-plan et affiche son ID).
 
-If you want a transient container, `docker run --rm` will remove the container after it stops.
+Si vous voulez un conteneur temporaire, `docker run --rm` supprimera le conteneur après son arrêt.
 
-If you want to map a directory on the host to a docker container, `docker run -v $HOSTDIR:$DOCKERDIR`. Also see [Volumes](https://github.com/wsargent/docker-cheat-sheet/#volumes).
+Si vous voulez mapper un répertoire sur l'hôte vers un conteneur docker, `docker run -v $HOSTDIR:$DOCKERDIR`. Voir aussi [Volumes](https://github.com/wsargent/docker-cheat-sheet/#volumes).
 
-If you want to remove also the volumes associated with the container, the deletion of the container must include the `-v` switch like in `docker rm -v`.
+Si vous souhaitez également supprimer les volumes associés au conteneur, la suppression du conteneur doit inclure `-v` comme dans `docker rm -v`.
 
-There's also a [logging driver](https://docs.docker.com/engine/admin/logging/overview/) available for individual containers in docker 1.10. To run docker with a custom log driver (i.e., to syslog), use `docker run --log-driver=syslog`.
+Il y a aussi un [pilote de journalisation](https://docs.docker.com/engine/admin/logging/overview/) disponible pour les conteneurs individuels dans le docker 1.10. Pour exécuter docker avec un pilote de journalisation (par exemple, un syslog), utilisez `docker run --log-driver=syslog`.
 
-Another useful option is `docker run --name yourname docker_image` because when you specify the `--name` inside the run command this will allow you to start and stop a container by calling it with the name the you specified when you created it.
+Une autre option utile est `docker run --name yourname docker_image` car lorsque vous spécifiez le `--name` dans la commande `run`, cela vous permet de démarrer et d'arrêter un conteneur en l'appelant avec le nom que vous avez spécifié lorsque vous l'avez créé.
 
 ### Starting and Stopping
 
