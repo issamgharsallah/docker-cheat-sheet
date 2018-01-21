@@ -1,63 +1,62 @@
-# Docker Cheat Sheet
+# Antisèche Docker
 
-**Want to improve this cheat sheet?  See the [Contributing](#contributing) section!**
 
-## Table of Contents
+## Table des matières
 
-* [Why Docker](#why-docker)
-* [Prerequisites](#prerequisites)
+* [Pourquoi Docker](#why-docker)
+* [Prérequis](#prerequisites)
 * [Installation](#installation)
-* [Containers](#containers)
+* [Conteneurs](#containers)
 * [Images](#images)
-* [Networks](#networks)
-* [Registry and Repository](#registry--repository)
+* [Réseaux](#networks)
+* [Enregistrement et Dépôt](#registry--repository)
 * [Dockerfile](#dockerfile)
 * [Layers](#layers)
 * [Links](#links)
 * [Volumes](#volumes)
-* [Exposing Ports](#exposing-ports)
-* [Best Practices](#best-practices)
-* [Security](#security)
-* [Tips](#tips)
+* [Exposition des Ports](#exposing-ports)
+* [Meilleures pratiques](#best-practices)
+* [Sécurité](#security)
+* [Astuces](#tips)
 * [Contributing](#contributing)
 
 ## Why Docker
 
-"With Docker, developers can build any app in any language using any toolchain. “Dockerized” apps are completely portable and can run anywhere - colleagues’ OS X and Windows laptops, QA servers running Ubuntu in the cloud, and production data center VMs running Red Hat.
+"Avec Docker, les développeurs peuvent créer n'importe quelle application dans n'importe quelle langue en utilisant n'importe quel chaîne d'outils. Les applications «Dockeriser» sont complètement portables et peuvent être exécutées n'importe où: ordinateurs portables OS X et Windows de collègues, serveurs exécutant Ubuntu dans le cloud, machines virtuelles d'un datacenter de production exécutant Red Hat..
 
-Developers can get going quickly by starting with one of the 13,000+ apps available on Docker Hub. Docker manages and tracks changes and dependencies, making it easier for sysadmins to understand how the apps that developers build work. And with Docker Hub, developers can automate their build pipeline and share artifacts with collaborators through public or private repositories.
+Les développeurs peuvent démarrer rapidement en commençant par l'une des 13 000+ applications disponibles sur Docker Hub. Docker gère et suit les modifications et les dépendances, ce qui permet aux administrateurs système de comprendre plus facilement le fonctionnement des applications créées par les développeurs. Et avec Docker Hub, les développeurs peuvent automatiser leur pipeline de génération et partager des artefacts (fichiers crèes) avec des collaborateurs via des dépôts publics ou privés.
 
-Docker helps developers build and ship higher-quality applications, faster." -- [What is Docker](https://www.docker.com/what-docker#copy1)
+Docker aide les développeurs à créer et déployer des applications de meilleure qualité, plus rapidement." -- [What is Docker](https://www.docker.com/what-docker#copy1)
 
-## Prerequisites
+## Prérequis
 
-I use [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh) with the [Docker plugin](https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins#docker) for autocompletion of docker commands. YMMV.
+J'utilise le terminal [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh) avec le plugin [Docker plugin](https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins#docker), c'est plutôt pratique pour l'autocompletion des commandes docker.
 
 ### Linux
 
-The 3.10.x kernel is [the minimum requirement](https://docs.docker.com/engine/installation/binaries/#check-kernel-dependencies) for Docker.
+Le noyau 3.10.x est [le minimum requis](https://docs.docker.com/engine/installation/binaries/#check-kernel-dependencies) pour Docker.
 
 ### MacOS
 
- 10.8 “Mountain Lion” or newer is required.
+ 10.8 “Mountain Lion” ou plus récent est requis.
 
 ## Installation
 
 ### Linux
 
-Quick and easy install script provided by Docker:
+Script d'installation rapide et facile fourni par Docker:
 
 ```
 curl -sSL https://get.docker.com/ | sh
 ```
 
-If you're not willing to run a random shell script, please see the [installation](https://docs.docker.com/engine/installation/linux/) instructions for your distribution.
+Si vous n'êtes pas prêt à exécuter un script shell aléatoire, consultez ces instructions [installation](https://docs.docker.com/engine/installation/linux/) pour votre distribution.
 
-If you are a complete Docker newbie, you should follow the [series of tutorials](https://docs.docker.com/engine/getstarted/) now.
+Si vous êtes un débutant en Docker, vous devriez suivre la [série de tutoriels](https://docs.docker.com/engine/getstarted/) le plus tôt possible.
 
 ### Mac OS X
 
-Download and install [Docker Toolbox](https://docs.docker.com/toolbox/overview/).  [Docker For Mac](https://docs.docker.com/docker-for-mac/) is nice, but it's not quite as finished as the VirtualBox install.  [See the comparison](https://docs.docker.com/docker-for-mac/docker-toolbox/).
+Télécharger et installer [Docker Toolbox](https://docs.docker.com/toolbox/overview/).  [Docker For Mac](https://docs.docker.com/docker-for-mac/) est bien, mais ce n'est pas tout à fait aussi fini que l'installation avec VirtualBox.  [Voir la comparaison](https://docs.docker.com/docker-for-mac/docker-toolbox/).
 
 > **NOTE** If you have an existing docker toolbox, you might think you can upgrade [Docker Machine](https://docs.docker.com/machine/install-machine/) binaries directly (either from URL or `docker-machine upgrade default`) and it will take care of itself.  This is not going to help -- `docker-machine` will be `1.10.3` while `docker` is still `1.8.3` or whatever your previous version is.
 >
@@ -81,9 +80,9 @@ That's it, you have a running Docker container.
 
 If you are a complete Docker newbie, you should probably follow the [series of tutorials](https://docs.docker.com/engine/getstarted/) now.
 
-## Containers
+## Conteneurs
 
-[Your basic isolated Docker process](http://etherealmind.com/basics-docker-containers-hypervisors-coreos/). Containers are to Virtual Machines as threads are to processes. Or you can think of them as chroots on steroids.
+[Votre processus Docker isolé de base](http://etherealmind.com/basics-docker-containers-hypervisors-coreos/). Les conteneurs sont aux machines virtuelles ce que les threads sont aux processus. Ou vous pouvez penser à eux comme des dopets aux stéroïdes.
 
 ### Lifecycle
 
